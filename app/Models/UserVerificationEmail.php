@@ -6,13 +6,13 @@ use Illuminate\Database\Eloquent\Model;
 
 class UserVerificationEmail extends Model
 {
-    protected $table = 'user_verification_email';
+    protected $table = 'email_verification_token';
     protected $fillable = [
         'user_id',
         'email',
         'token',
-        'description',
         'expired_at',
-        'confirmed_status'
+        'confirmed',
+        'confirmed_at'
     ];
 }

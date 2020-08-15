@@ -20,6 +20,7 @@ class EmailVerificationToken extends Migration
             $table->text('token', 225);
             $table->boolean('confirmed', 225)->default(false);
             $table->dateTime('confirmed_at')->nullable();
+            $table->dateTime('expired_at')->nullable();
             $table->timestamps();
         });
     }

@@ -66,30 +66,13 @@ class UserController extends Controller
             ], 400);
         }
 
-        if(!strstr(\strtolower($req->company_website), 'https://') or !\strstr(\strtolower($req->company_website), 'https://')){
-            $company_website = 'http://'.$req->company_website;
-            if(empty(\dns_get_record($company_website, DNS_A)))
-                return \sendResponse([
-                    'company_website' => [
-                        'Please provide a valid domain.'
-                    ]
-                ], 400);
-        }
-
         $user = User::create([
-            'name' => $req->get('name'),
+            'first_name' => $req->get('first_name'),
+            'last_name' => $req->get('last_name'),
+            'phone' => $req->get('phone'),
             'email' => $req->get('email'),
             'password' => Hash::make($req->get('password')),
         ]);
-
-        $company = CompanyData::create([
-            'user_id' => $user->id,
-            'company_name' => $req->company_name,
-            'employee_number' => $req->employee_number,
-            'company_website' => $req->company_website
-        ]);
-
-        $user->company_data = CompanyData::where('company_id', $company->company_id)->first();
 
         $token = JWTAuth::fromUser($user);
 
@@ -142,7 +125,7 @@ class UserController extends Controller
     public function verifyEmail(Request $req)
     {
         $rules = [
-            'token' => 'required|exists:user_verification_email,token'
+            'token' => 'required|exists:email_verification_token,token'
         ];
 
         $validator = Validator::make($req->all(), $rules);
@@ -162,7 +145,7 @@ class UserController extends Controller
         }
 
         $token->update([
-            'confirmed_status' => 1
+            'confirmed' => 1
         ]);
 
         User::where('id', $token->user_id)->update([
